@@ -1,0 +1,89 @@
+<link rel="import" href="../polymer/polymer.html">
+
+
+<dom-module id="status-base">
+  <style>
+			:host{
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				justify-content: space-between;
+				font-size: 1.7em;
+				overflow: hidden;
+				width: 100%;
+			}
+
+			p#label{
+				margin: 0px;
+				margin-bottom: 2%;
+				font-size: 2em;
+				width: 100%;
+			}
+		</style>
+  <template>
+	<div id="status">
+	  <p id="label"> <span>{{_computeMsg(upFlag)}}</span></p>
+	</div>
+
+
+
+  </template>
+</dom-module>
+<script>
+	Polymer({
+		is: 'status-base',
+		properties: {
+			errorMsg: {
+				notify: true,
+				type: String
+			},
+			upFlag: {
+				notify: true,
+				type: Boolean,
+				initial: false
+			},
+			selector: {
+				notify: true,
+				observer: 'selectorChanged'
+			}
+		},
+		ready: function () {
+			this.errors="No errors";
+			console.log("Status base started");
+		},
+		selectorChanged: function () {
+			var that = this;
+			if (this.selector) {
+				d1(this.selector).Status().subscribe(function(data){
+					var oneError=false;
+					var errMsg = "Robot: "+data[0].robot.name+"\n";
+					rParts = data[0].parts;
+					for(var n in rParts) {
+						if(rParts[n].error.code[0]>0) {
+							errMsg = errMsg
+								+"["+(new Date(rParts[n].error.time[0]).toString())+"] "
+								+rParts[n].name+": <"
+								+rParts[n].error.code[0]+"> "
+								+rParts[n].errorList[rParts[n].error.code[0]].msg+"\n";
+							oneError=true;
+						}
+
+					}
+					/// TODO : should be global part status
+					if(!oneError)
+						errMsg += "No error detected";
+					this.errorMsg = errMsg;
+					console.log(this.errorMsg);
+
+					/* toggle upFlag */
+					this.upFlag = !this.upFlag;
+				})
+			}
+		},
+		_computeMsg: function(upFlag) {
+			console.log('_computeMsg');
+			console.log(this.errorMsg);
+			return this.errorMsg;
+		}
+	});
+</script>
