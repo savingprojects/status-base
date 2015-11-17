@@ -53,31 +53,36 @@
 		},
 		selectorChanged: function () {
 			var that = this;
+			var robotName = 'Diya';
 			if (this.selector) {
-				d1(this.selector).Status().subscribe(function(data){
-					var oneError=false;
-					var errMsg = "Robot: "+data[0].robot.name+"\n";
-					rParts = data[0].parts;
-					for(var n in rParts) {
-						if(rParts[n].error.code[0]>0) {
-							errMsg = errMsg
-								+"["+(new Date(rParts[n].error.time[0]).toString())+"] "
-								+rParts[n].name+": <"
-								+rParts[n].error.code[0]+"> "
-								+rParts[n].errorList[rParts[n].error.code[0]].msg+"\n";
-							oneError=true;
-						}
+				// d1(this.selector).Status().subscribe(robotName, function(data){
+				// 	var oneError=false;
+				// 	var errMsg = "Robot: "+data[0].robot.name+"\n";
+				// 	rParts = data[0].parts;
+				// 	for(var n in rParts) {
+				// 		if(rParts[n].evts.code[0]>0) {
+				// 			errMsg = errMsg
+				// 				+"["+(new Date(rParts[n].evts.time[0]).toString())+"] "
+				// 				+rParts[n].name+": <"
+				// 				+rParts[n].evts.code[0]+"/"+rParts[n].evts.codeRef[0]+"> "
+				// 				+rParts[n].errorList[rParts[n].evts.code[0]].msg+"\n";
+				// 			oneError=true;
+				// 		}
 
-					}
-					/// TODO : should be global part status
-					if(!oneError)
-						errMsg += "No error detected";
-					this.errorMsg = errMsg;
-					console.log(this.errorMsg);
+				// 	}
+				// 	/// TODO : should be global part status
+				// 	if(!oneError)
+				// 		errMsg += "No error detected";
+				// 	this.errorMsg = errMsg;
+				// 	console.log(this.errorMsg);
 
-					/* toggle upFlag */
-					this.upFlag = !this.upFlag;
-				})
+				// 	/* toggle upFlag */
+				// 	this.upFlag = !this.upFlag;
+				// });
+
+				d1(this.selector).Status().subscribe(null, function(data){
+					console.log(data);
+				});
 			}
 		},
 		_computeMsg: function(upFlag) {
